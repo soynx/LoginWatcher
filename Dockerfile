@@ -1,29 +1,27 @@
-# Stage 1: Build the JAR using Maven
+# Stage 1: Build the fat JAR with Maven inside the container
 FROM maven:3.9.5-eclipse-temurin-21 AS build
 
-# Set work directory
 WORKDIR /app
 
 # Copy Maven project files
 COPY pom.xml .
 COPY src ./src
 
-# Build the project (skip tests if needed)
+# Build the project and produce a shaded JAR
 RUN mvn clean package -DskipTests
 
-# Stage 2: Create a minimal runtime image
+# Stage 2: Runtime stage
 FROM eclipse-temurin:21-jdk
 
-# Set work directory
 WORKDIR /app
 
-# Copy the JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy the JAR built in the previous stage
+COPY --from=build /app/target/app.jar app.jar
 
-# Expose ports if needed (not strictly required for SSH monitoring)
-# EXPOSE 8080
+# Copy logback configuration
+COPY logback.xml logback.xml
 
-# Environment variables (defaults)
+# Environment variables
 ENV LOG_LEVEL=INFO \
     AUTH_LOG_PATH=/var/log/auth.log \
     TELEGRAM_TOKEN= \
