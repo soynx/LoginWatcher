@@ -9,5 +9,5 @@ RUN mvn clean package -DskipTests
 WORKDIR /app/target
 
 # ENTRYPOINT ["java", "-Dlogback.configurationFile=/app/logback.xml", "-jar", "app.jar"]
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+# ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["ls -la", "/app/target"]
