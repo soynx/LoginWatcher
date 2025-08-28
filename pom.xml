@@ -23,12 +23,11 @@
             <version>1.7.36</version>
         </dependency>
 
-        <!-- Logback for logging -->
+         <!-- Logback for logging -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.18</version>
-            <scope>compile</scope>
+            <version>1.2.3</version>
         </dependency>
     </dependencies>
 
