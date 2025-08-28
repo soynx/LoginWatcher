@@ -34,7 +34,7 @@ public class SSHMonitor {
             logger.info("Using Telegram Bot token: {}", telegramBotSender.TOKEN);
         }
 
-        if (telegramBotSender.CHAT == null  || telegramBotSender.CHAT.isBlank()) {
+        if (telegramBotSender.CHAT == null || telegramBotSender.CHAT.isBlank()) {
             throw new IllegalArgumentException("No chat-id provided!");
         } else {
             logger.info("Using Telegram Bot chat: {}", telegramBotSender.CHAT);
@@ -42,10 +42,26 @@ public class SSHMonitor {
         // ################################################################################################
 
 
-        logger.info("Starting ...");
+        // register a task before shutting down
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("shutting down!");
+            telegramBotSender.sendTelegramMessage("<b>\uD83D\uDD34 Monitoring disabled!</b>", "HTML");
+        }));
+    }
+
+    public static void main(String[] args) {
+        SSHMonitor monitor = new SSHMonitor(info -> {
+            // implement trigger
+            logger.info("Detected SHH login: {}", info.toString());
+            telegramBotSender.sendTelegramMessage("<b>New login:</b><br>" + info, "HTML");
+        });
+        monitor.startMonitoring();
     }
 
     public void startMonitoring() {
+        logger.info("Monitoring started!");
+        telegramBotSender.sendTelegramMessage("<b>\uD83D\uDFE2 Monitoring started!</b>", "HTML");
+
         try (RandomAccessFile file = new RandomAccessFile(logFilePath, "r")) {
             file.seek(file.length()); // jump to end of the file
 
@@ -63,14 +79,5 @@ public class SSHMonitor {
         } catch (IOException | InterruptedException e) {
             logger.error("Error while monitoring log file", e);
         }
-    }
-
-    public static void main(String[] args) {
-        SSHMonitor monitor = new SSHMonitor(info -> {
-            // implement trigger
-            logger.info("Detected SHH login: {}", info.toString());
-            telegramBotSender.sendTelegramMessage("<b>New login:</b><br>" + info, "HTML");
-        });
-        monitor.startMonitoring();
     }
 }
