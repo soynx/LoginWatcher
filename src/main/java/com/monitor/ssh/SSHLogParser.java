@@ -1,9 +1,13 @@
 package com.monitor.ssh;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SSHLogParser {
+    private static final Logger logger = LoggerFactory.getLogger(SSHLogParser.class);
     private static final Pattern SUCCESS_PATTERN = Pattern.compile(
             "Accepted \\w+ for (\\S+) from (\\S+) port (\\d+)"
     );
@@ -28,6 +32,7 @@ public class SSHLogParser {
             return new AuthInfo(user, ip, port, false);
         }
 
+        logger.debug("Log line '{}' could not be parsed into AuthInfo object!", line);
         return null; // Zeile nicht relevant
     }
 }
