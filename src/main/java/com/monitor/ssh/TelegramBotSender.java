@@ -3,6 +3,8 @@ package com.monitor.ssh;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,27 +27,42 @@ public class TelegramBotSender {
             String urlString = "https://api.telegram.org/bot" + TOKEN + "/sendMessage";
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            String payload = "chat_id=" + CHAT +
-                             "&text=" + java.net.URLEncoder.encode(message, StandardCharsets.UTF_8) +
-                             "&parse_mode=" + parseMode;
 
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+            // Escape quotes for JSON
+            String jsonMessage = message.replace("\"", "\\\"");
+
+            String jsonPayload = String.format(
+                    "{\"chat_id\":\"%s\",\"text\":\"%s\",\"parse_mode\":\"%s\"}",
+                    CHAT,
+                    jsonMessage,
+                    parseMode
+            );
 
             try (OutputStream os = conn.getOutputStream()) {
-                os.write(payload.getBytes(StandardCharsets.UTF_8));
+                os.write(jsonPayload.getBytes(StandardCharsets.UTF_8));
             }
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                logger.debug("Sent Bot message successfully!");
+                logger.debug("Sent Telegram message successfully!");
             } else {
-                logger.warn("Could not send message HTTP response code: {}", responseCode);
+                // Read error response from Telegram
+                StringBuilder errorResponse = new StringBuilder();
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        errorResponse.append(line);
+                    }
+                }
+                logger.warn("Failed to send Telegram message. HTTP Code: {}. Response: {}", responseCode, errorResponse);
             }
 
         } catch (Exception e) {
-            logger.error("Issued Exception while sending a message: {}", e.getMessage());
+            logger.error("Exception while sending Telegram message: ", e);
         }
     }
 }

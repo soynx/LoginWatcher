@@ -45,7 +45,7 @@ public class SSHMonitor {
         // register a task before shutting down
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("shutting down!");
-            telegramBotSender.sendTelegramMessage("<b>\uD83D\uDD34 Monitoring disabled!</b>", "HTML");
+            telegramBotSender.sendTelegramMessage("<b>\uD83D\uDD34 Login Monitoring disabled!</b>", "HTML");
         }));
     }
 
@@ -60,7 +60,7 @@ public class SSHMonitor {
 
     public void startMonitoring() {
         logger.info("Monitoring started!");
-        telegramBotSender.sendTelegramMessage("<b>\uD83D\uDFE2 Monitoring started!</b>", "HTML");
+        telegramBotSender.sendTelegramMessage("<b>\uD83D\uDFE2 Login Monitoring started!</b>", "HTML");
 
         try (RandomAccessFile file = new RandomAccessFile(logFilePath, "r")) {
             file.seek(file.length()); // jump to end of the file
