@@ -1,6 +1,7 @@
 docker-compose.yml
-/appdata/*.log
+/appdata
 /.idea
+dependency-reduced-pom.xml
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
