@@ -52,8 +52,8 @@ public class SSHMonitor {
     public static void main(String[] args) {
         SSHMonitor monitor = new SSHMonitor(info -> {
             // implement trigger
-            logger.info("Detected SHH login: {}", info.toString());
-            telegramBotSender.sendTelegramMessage("<b>New login:</b><br>" + info, "HTML");
+            logger.info("Detected new login: {}", info.toString());
+            telegramBotSender.sendTelegramMessage("<b>New login:</b>    " + info, "HTML");
         });
         monitor.startMonitoring();
     }
