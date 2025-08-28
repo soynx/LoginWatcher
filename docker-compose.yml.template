@@ -10,18 +10,12 @@ services:
       LOG_LEVEL: "INFO"
 
       # Path inside the container to monitor
-      AUTH_LOG_PATH: "/var/log/auth.log"
+      AUTH_LOG_PATH: "/var/log/auth_monitoring.log"
 
       # Telegram bot
       TELEGRAM_TOKEN: "your-telegram-bot-token"
       TELEGRAM_CHAT_ID: "your-chat-id"
 
-    # If you want to monitor a host file
     volumes:
-      - /var/log/auth.log:/var/log/auth.log:ro
-
-    # Optional: you can mount a directory for logs
-      - ./appdata/logs:/app/appdata/logs
-
-    # Optional: set working directory inside container
-    working_dir: /app
+      # Mount your rsyslog Auth file inside the container (read-only)
+      - /var/log/auth_monitoring.log:/var/log/auth_monitoring.log:ro
