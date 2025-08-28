@@ -22,9 +22,7 @@ configurable over ENV:
     > sudo apt update && sudo apt install rsyslog
 
 2. Edit the rsyslog config (most likely at ``/etc/rsyslog.d/50-default.conf``)
-    ````text
-    auth,authpriv.*    /var/log/auth_monitoring.log
-    ````
+    > auth,authpriv.*    /var/log/auth_monitoring.log
 3. Restart ``rsyslog``
     > sudo systemctl restart rsyslog
 
