@@ -1,5 +1,6 @@
 docker-compose.yml
 /appdata/*.log
+/.idea
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
