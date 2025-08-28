@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  login-watcher:
+    build: .
+    container_name: ssh-monitor
+    restart: unless-stopped
+    environment:
+      # Logging
+      LOG_LEVEL: "INFO"
+
+      # Path inside the container to monitor
+      AUTH_LOG_PATH: "/var/log/auth.log"
+
+      # Telegram bot
+      TELEGRAM_TOKEN: "your-telegram-bot-token"
+      TELEGRAM_CHAT_ID: "your-chat-id"
+
+    # If you want to monitor a host file
+    volumes:
+      - /var/log/auth.log:/var/log/auth.log:ro
+
+    # Optional: you can mount a directory for logs
+      - ./appdata/logs:/app/appdata/logs
+
+    # Optional: set working directory inside container
+    working_dir: /app
