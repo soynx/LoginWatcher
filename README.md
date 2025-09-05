@@ -33,7 +33,8 @@ configurable over ENV:
 
 4. rename your adjusted Docker compose file:
     > mv docker-compose.yml.template docker-compose.yml
-
+   
+5. Configure your compose file
 ### RUN:
 then run:
 > docker compose up -d
