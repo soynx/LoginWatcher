@@ -13,10 +13,12 @@ public class TelegramBotSender extends TelegramLongPollingBot {
 
     private final String token;
     private final String chatId;
+    private final String name;
 
     public TelegramBotSender() {
         this.token = System.getenv("TELEGRAM_TOKEN");
         this.chatId = System.getenv("TELEGRAM_CHAT_ID");
+        this.name = System.getenv("TELEGRAM_BOT_NAME");
     }
 
     @Override
@@ -72,7 +74,7 @@ public class TelegramBotSender extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "Soynx-Auth-Bot"; // Replace with your bot's username
+        return this.name;
     }
 
     @Override
