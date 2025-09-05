@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SSHMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SSHMonitor.class);
@@ -64,10 +66,13 @@ public class SSHMonitor {
     }
 
     public static void main(String[] args) throws TelegramApiException {
+        ExecutorService botExecutor = Executors.newSingleThreadExecutor();
         SSHMonitor monitor = new SSHMonitor(info -> {
-            // implement trigger
-            logger.info("Detected new login: {}", info.toString());
-            telegramBotSender.sendTelegramMessage("<b>New login:</b>    " + info, "HTML");
+            botExecutor.submit(() -> {
+                // implement trigger
+                logger.info("Detected new login: {}", info.toString());
+                telegramBotSender.sendTelegramMessage("<b>New login:</b>    " + info, "HTML");
+            });
         });
         monitor.startMonitoring();
     }
