@@ -2,6 +2,9 @@ package com.monitor.ssh;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +18,7 @@ public class SSHMonitor {
     private final String logFilePath;
     private final TriggerHandler triggerHandler;
 
-    public SSHMonitor(TriggerHandler triggerHandler) {
+    public SSHMonitor(TriggerHandler triggerHandler) throws TelegramApiException {
         this.logFilePath = System.getenv("AUTH_LOG_PATH");
         this.triggerHandler = triggerHandler;
 
@@ -50,6 +53,8 @@ public class SSHMonitor {
         }
         // ################################################################################################
 
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        botsApi.registerBot(telegramBotSender);
 
         // register a task before shutting down
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
