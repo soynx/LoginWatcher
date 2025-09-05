@@ -16,6 +16,7 @@ services:
       TELEGRAM_TOKEN: "your-telegram-bot-token"
       TELEGRAM_CHAT_ID: "your-chat-id"
 
+      # SSH server of your host system
       SSH_HOST: "your-host-ip"
       SSH_PORT: "22"
       SSH_USER: "root"
