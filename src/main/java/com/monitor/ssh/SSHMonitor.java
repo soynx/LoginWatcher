@@ -42,6 +42,12 @@ public class SSHMonitor {
         } else {
             logger.info("Using Telegram Bot chat: {}", telegramBotSender.getChatId());
         }
+
+        if (telegramBotSender.getBotUsername() == null || telegramBotSender.getBotUsername().isBlank()) {
+            throw new IllegalArgumentException("No bot-name provided!");
+        } else {
+            logger.info("Using Telegram Bot chat: {}", telegramBotSender.getBotUsername());
+        }
         // ################################################################################################
 
 

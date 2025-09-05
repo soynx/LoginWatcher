@@ -15,6 +15,7 @@ services:
       # Telegram bot
       TELEGRAM_TOKEN: "your-telegram-bot-token"
       TELEGRAM_CHAT_ID: "your-chat-id"
+      TELEGRAM_BOT_NAME: "name-of-your-bot"
 
       # SSH server of your host system
       SSH_HOST: "your-host-ip"

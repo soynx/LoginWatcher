@@ -8,6 +8,7 @@ configurable over ENV:
 - ``AUTH_LOG_PATH`` Path to your Linux Auth Log
 - ``TELEGRAM_TOKEN`` Token of your telegram Bot
 - ``TELEGRAM_CHAT_ID`` Chat-Id of your preferred Telegram Chat
+- ``TELEGRAM_BOT_NAME`` Name of your Telegram Chat
 - ``SSH_HOST`` The host domain / ip the container uses to connect to the host system
 - ``SSH_PORT`` The port of your SSH server (default 22)
 - ``SSH_USER`` The username for SSH login
