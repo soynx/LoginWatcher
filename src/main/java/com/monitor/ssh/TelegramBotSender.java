@@ -29,12 +29,22 @@ public class TelegramBotSender extends TelegramLongPollingBot {
 
             // Validate chat ID
             if (incomingChatId.toString().equals(chatId)) {
-                if ("/shutdown".equalsIgnoreCase(text)) {
-                    sendTelegramMessage("<b>Authorised:</b> Executing shutdown...", "HTML");
-                    if (!Security.shutdownHost()) {
-                        logger.warn("Failed to shutdown host");
-                        sendTelegramMessage("<b>Failed to shutdown host</b>", "HTML");
-                    }
+                switch (text.toLowerCase()) {
+                    case "/shutdown":
+                        sendTelegramMessage("<b>Authorised:</b> Executing shutdown...", "HTML");
+                        if (!Security.shutdownHost()) {
+                            logger.warn("Failed to shutdown host");
+                            sendTelegramMessage("<b>Failed to shutdown host</b>", "HTML");
+                        }
+                        break;
+
+                    case "/status":
+                        sendTelegramMessage("<b>Bot is online</b>", "HTML");
+                        break;
+
+                    default:
+                        sendTelegramMessage("<b>Unknown command:</b> " + text, "HTML");
+                        break;
                 }
             } else {
                 logger.warn("Unauthorised chat attempted to send command: {}", incomingChatId);
@@ -42,6 +52,7 @@ public class TelegramBotSender extends TelegramLongPollingBot {
             }
         }
     }
+
 
     public void sendTelegramMessage(String message, String parseMode) {
         SendMessage sendMessage = new SendMessage();
