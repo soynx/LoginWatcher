@@ -7,26 +7,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class Security {
 
     private static final Logger logger = LoggerFactory.getLogger(Security.class);
 
-    public static void validateConfig() throws IllegalArgumentException {
+    public static void validateConfig() {
         String host = System.getenv("SSH_HOST");
         String user = System.getenv("SSH_USER");
         String password = System.getenv("SSH_PASSWORD");
-
         String portStr = System.getenv("SSH_PORT");
         int port = (portStr != null && !portStr.isEmpty()) ? Integer.parseInt(portStr) : 22;
 
-        if (host == null || host.isBlank() || user == null  || user.isBlank() || password == null || password.isBlank()) {
+        if (host == null || host.isBlank() || user == null || user.isBlank() || password == null || password.isBlank()) {
             throw new IllegalArgumentException("SSH configuration missing. Please set SSH_HOST, SSH_USER, SSH_PASSWORD, SSH_PORT (optional).");
         } else {
             logger.info("Using SSH host: {}", host);
             logger.info("Using SSH user: {}", user);
-            logger.info("Using SSH password: {}", password);
             logger.info("Using SSH port: {}", port);
         }
     }
@@ -41,21 +40,21 @@ public class Security {
 
         Session session = null;
         ChannelExec channel = null;
+        boolean success = false;
 
         try {
             JSch jsch = new JSch();
             session = jsch.getSession(user, host, port);
             session.setPassword(password);
 
-            // Disable strict host key checking for simplicity (not recommended for production)
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
 
             logger.info("Connecting to {}:{} via SSH...", host, port);
-            session.connect(10000); // 10-second timeout
+            session.connect(10000);
 
-            String command = "shutdown -h now";
+            String command = "sudo -n shutdown -h now || shutdown -h now";
             channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
@@ -65,26 +64,31 @@ public class Security {
 
             logger.info("Executing shutdown command on host...");
             byte[] tmp = new byte[1024];
+            long startTime = System.currentTimeMillis();
             while (true) {
                 while (in.available() > 0) {
                     int i = in.read(tmp, 0, 1024);
                     if (i < 0) break;
-                    logger.info(new String(tmp, 0, i));
+                    logger.info(new String(tmp, 0, i, StandardCharsets.UTF_8));
                 }
                 if (channel.isClosed()) {
                     logger.info("Exit status: {}", channel.getExitStatus());
+                    success = (channel.getExitStatus() == 0);
                     break;
                 }
-                Thread.sleep(1000);
+                if (System.currentTimeMillis() - startTime > 15000) {
+                    logger.warn("Timeout waiting for shutdown command to complete.");
+                    break;
+                }
+                Thread.sleep(500);
             }
 
         } catch (Exception e) {
             logger.error("Error during SSH shutdown: ", e);
-            return false;
         } finally {
             if (channel != null) channel.disconnect();
             if (session != null) session.disconnect();
-            return true;
         }
+        return success;
     }
 }
