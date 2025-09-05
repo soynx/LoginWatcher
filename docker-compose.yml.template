@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  login-watcher:
+    build: .
+    container_name: ssh-monitor
+    restart: unless-stopped
+    environment:
+      # Logging
+      LOG_LEVEL: "INFO"
+
+      # Path inside the container to monitor
+      AUTH_LOG_PATH: "/var/log/auth_monitoring.log"
+
+      # Telegram bot
+      TELEGRAM_TOKEN: "your-telegram-bot-token"
+      TELEGRAM_CHAT_ID: "your-chat-id"
+
+    volumes:
+      # Mount your rsyslog Auth file inside the container (read-only)
+      - /var/log/auth_monitoring.log:/var/log/auth_monitoring.log:ro
