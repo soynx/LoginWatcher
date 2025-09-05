@@ -63,7 +63,7 @@ public class SSHMonitor {
         }));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TelegramApiException {
         SSHMonitor monitor = new SSHMonitor(info -> {
             // implement trigger
             logger.info("Detected new login: {}", info.toString());
