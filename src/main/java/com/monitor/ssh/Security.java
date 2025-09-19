@@ -35,6 +35,10 @@ public class Security {
         }
     }
 
+    /**
+     * Method to shut down the Host Linux system over an ssh connection
+     * @return If the shutdown was successfully or not
+     */
     public static boolean shutdownHost() {
         String host = System.getenv("SSH_HOST");
         String portStr = System.getenv("SSH_PORT");
