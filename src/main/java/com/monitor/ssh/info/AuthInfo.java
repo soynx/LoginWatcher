@@ -1,4 +1,4 @@
-package com.monitor.ssh;
+package com.monitor.ssh.info;
 
 public record AuthInfo(String user, String ip, int port, boolean success) {
 

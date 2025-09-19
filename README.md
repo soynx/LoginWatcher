@@ -12,8 +12,11 @@ configurable over ENV:
 - ``SSH_HOST`` The host domain / ip the container uses to connect to the host system
 - ``SSH_PORT`` The port of your SSH server (default 22)
 - ``SSH_USER`` The username for SSH login
-- ``SSH_PASSWORD`` The Password for SSH login
+- ``SSH_PASSWORD`` The Password for SSH login 
+- ``SSH_PRIVATE_KEY`` The Private Key for SSH login
+- ``SSH_PRIVATE_KEY_PASSPHRASE`` The passphrase for your SSH private key (optional)
 
+> There must be a password or Private Key set for SSH authentication
 
 ### Requirements:
 - Docker-CLI

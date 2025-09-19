@@ -1,5 +1,6 @@
 package com.monitor.ssh;
 
+import com.monitor.ssh.info.DeviceInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -43,6 +44,10 @@ public class TelegramBotSender extends TelegramLongPollingBot {
                     case "/status":
                         sendTelegramMessage("<b>Bot is online</b>", "HTML");
                         break;
+
+                    case "/info":
+                        String message = DeviceInfo.getMessageFormat();
+                        sendTelegramMessage(message, "HTML");
 
                     default:
                         sendTelegramMessage("<b>Unknown command:</b> " + text, "HTML");

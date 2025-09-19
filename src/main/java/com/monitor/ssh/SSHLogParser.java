@@ -1,5 +1,6 @@
 package com.monitor.ssh;
 
+import com.monitor.ssh.info.AuthInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
