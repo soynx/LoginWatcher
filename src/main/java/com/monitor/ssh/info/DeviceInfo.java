@@ -74,19 +74,19 @@ public class DeviceInfo {
     }
 
     public static String getMessageFormat() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<b>Information:</b><br>")
-                .append("<b>Public IP:</b> ").append(NetworkInfo.getPublicIp()).append("<br>")
+        StringBuilder sb = new StringBuilder();
+        sb.append("<b>Information:</b>\n")
+                .append("<b>Public IP:</b> ").append(NetworkInfo.getPublicIp()).append("\n")
                 .append("<b>Private IP:</b> ").append(NetworkInfo.getPrivateIp());
 
-        sb.append("<br><br><b>CPU and Memory:</b><br>")
-                .append("<b>Max Mem:</b> ").append(getMaxMemory()).append("<br>")
-                .append("<b>Total Mem:</b> ").append(getTotalMemory()).append("<br>")
+        sb.append("\n\n<b>CPU and Memory:</b>\n")
+                .append("<b>Max Mem:</b> ").append(getMaxMemory()).append("\n")
+                .append("<b>Total Mem:</b> ").append(getTotalMemory()).append("\n")
                 .append("<b>Free Mem:</b> ").append(getFreeMemory());
 
-        sb.append("<br><br><b>Device:</b><br>")
-                .append("<b>OS Name:</b> ").append(getOsName()).append("<br>")
-                .append("<b>OS Version:</b> ").append(getOsVersion()).append("<br>")
+        sb.append("\n\n<b>Device:</b>\n")
+                .append("<b>OS Name:</b> ").append(getOsName()).append("\n")
+                .append("<b>OS Version:</b> ").append(getOsVersion()).append("\n")
                 .append("<b>Java Version:</b> ").append(getJavaVersion());
 
         return sb.toString();
