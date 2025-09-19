@@ -6,7 +6,7 @@
 
     <groupId>com.monitor.ssh</groupId>
     <artifactId>LoginWatcher</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.1</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -51,6 +51,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <!-- Compiler plugin -->
             <plugin>
