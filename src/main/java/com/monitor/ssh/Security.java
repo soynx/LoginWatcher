@@ -16,13 +16,18 @@ public class Security {
 
     public static void validateConfig() {
         String host = System.getenv("SSH_HOST");
+        String portStr = System.getenv("SSH_PORT");
         String user = System.getenv("SSH_USER");
         String password = System.getenv("SSH_PASSWORD");
-        String portStr = System.getenv("SSH_PORT");
+        String privateKey = System.getenv("SSH_PRIVATE_KEY");
+
         int port = (portStr != null && !portStr.isEmpty()) ? Integer.parseInt(portStr) : 22;
 
-        if (host == null || host.isBlank() || user == null || user.isBlank() || password == null || password.isBlank()) {
+        if (host == null || host.isBlank() || user == null || user.isBlank()) {
             throw new IllegalArgumentException("SSH configuration missing. Please set SSH_HOST, SSH_USER, SSH_PASSWORD, SSH_PORT (optional).");
+
+        } else if ((password == null || password.isBlank()) && (privateKey == null || privateKey.isBlank())) {
+            throw new IllegalArgumentException("SSH configuration missing. Please set at least a SSH_PASSWORD or SSH_PRIVATE_KEY.");
         } else {
             logger.info("Using SSH host: {}", host);
             logger.info("Using SSH user: {}", user);
@@ -35,6 +40,8 @@ public class Security {
         String portStr = System.getenv("SSH_PORT");
         String user = System.getenv("SSH_USER");
         String password = System.getenv("SSH_PASSWORD");
+        String privateKey = System.getenv("SSH_PRIVATE_KEY");
+        String privateKeyPassphrase = System.getenv("SSH_PRIVATE_KEY_PASSPHRASE"); // optional
 
         int port = (portStr != null && !portStr.isEmpty()) ? Integer.parseInt(portStr) : 22;
 
@@ -44,8 +51,22 @@ public class Security {
 
         try {
             JSch jsch = new JSch();
+
+            // --- Add private key if provided ---
+            if (privateKey != null && !privateKey.isEmpty()) {
+                if (privateKeyPassphrase != null && !privateKeyPassphrase.isEmpty()) {
+                    jsch.addIdentity(privateKey, privateKeyPassphrase);
+                } else {
+                    jsch.addIdentity(privateKey);
+                }
+            }
+
             session = jsch.getSession(user, host, port);
-            session.setPassword(password);
+
+            // --- Use password only if no key was provided ---
+            if (password != null && !password.isEmpty() && (privateKey == null || privateKey.isEmpty())) {
+                session.setPassword(password);
+            }
 
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
