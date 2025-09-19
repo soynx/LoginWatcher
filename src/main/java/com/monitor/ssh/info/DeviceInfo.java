@@ -90,13 +90,13 @@ public class DeviceInfo {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(uptimeMillis) % 60;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(uptimeMillis) % 60;
 
-        return String.format("%02d-%02d-%02d-%02d", days, hours, minutes, seconds);
+        return String.format("%02d d -%02d h -%02d m -%02d s", days, hours, minutes, seconds);
     }
 
     public static String getMessageFormat() {
         StringBuilder sb = new StringBuilder();
         sb.append("<b>App Version: </b>").append(ProjectInfo.getProjectVersion());
-        sb.append("<b>JVM Uptime:</b>").append(getJvmUptime());
+        sb.append("\n\n<b>JVM Uptime:</b>").append(getJvmUptime());
 
         sb.append("\n\n<b>Networking:</b>\n")
                 .append("<b>Public IP:</b> ").append(NetworkInfo.getPublicIp()).append("\n")
