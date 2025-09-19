@@ -48,6 +48,7 @@ public class TelegramBotSender extends TelegramLongPollingBot {
                     case "/info":
                         String message = DeviceInfo.getMessageFormat();
                         sendTelegramMessage(message, "HTML");
+                        break;
 
                     default:
                         sendTelegramMessage("<b>Unknown command:</b> " + text, "HTML");
