@@ -6,6 +6,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class DeviceInfo {
 
@@ -80,15 +81,22 @@ public class DeviceInfo {
         return String.format("%.2f %s", value, unit);
     }
 
-    // --- System Load (may not work everywhere) ---
-    private static double getSystemLoadAverage() {
-        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
-        return osBean.getSystemLoadAverage();
+    public static String getJvmUptime() {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        long uptimeMillis = runtimeMXBean.getUptime();
+
+        long days = TimeUnit.MILLISECONDS.toDays(uptimeMillis);
+        long hours = TimeUnit.MILLISECONDS.toHours(uptimeMillis) % 24;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(uptimeMillis) % 60;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(uptimeMillis) % 60;
+
+        return String.format("%02d-%02d-%02d-%02d", days, hours, minutes, seconds);
     }
 
     public static String getMessageFormat() {
         StringBuilder sb = new StringBuilder();
         sb.append("<b>App Version: </b>").append(ProjectInfo.getProjectVersion());
+        sb.append("<b>JVM Uptime:</b>").append(getJvmUptime());
 
         sb.append("\n\n<b>Networking:</b>\n")
                 .append("<b>Public IP:</b> ").append(NetworkInfo.getPublicIp()).append("\n")
