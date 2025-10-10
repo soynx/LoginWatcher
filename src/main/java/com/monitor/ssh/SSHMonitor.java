@@ -10,6 +10,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,6 +22,7 @@ public class SSHMonitor {
 
     private final String logFilePath;
     private final TriggerHandler triggerHandler;
+    private final List<String> processedLogLines = new ArrayList<>();
 
     public SSHMonitor(TriggerHandler triggerHandler) throws TelegramApiException {
         this.logFilePath = System.getenv("AUTH_LOG_PATH");
@@ -97,12 +100,15 @@ public class SSHMonitor {
             while (true) {
                 String line = file.readLine();
                 if (line != null) {
-                    AuthInfo info = SSHLogParser.parseLine(line);
-                    if (info != null) {
-                        triggerHandler.trigger(info);
+                    if (!processedLogLines.contains(line)) {
+                        processedLogLines.add(line);
+                        AuthInfo info = SSHLogParser.parseLine(line);
+                        if (info != null) {
+                            triggerHandler.trigger(info);
+                        }
                     }
                 } else {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 }
             }
         } catch (IOException | InterruptedException e) {
