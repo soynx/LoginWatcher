@@ -72,7 +72,7 @@ public class SSHMonitor {
             botExecutor.submit(() -> {
                 // implement trigger
                 logger.info("Detected new login: {}", info.toString());
-                StringBuilder msg = new StringBuilder("<h2>New Activity</h2>\n\n");
+                StringBuilder msg = new StringBuilder("<b>New Activity</b>\n\n");
                 msg.append("\n<b>Description:</b> ").append(info.description());
                 msg.append("\n<b>Success:</b> ").append(info.success());
                 msg.append("\n<b>EventType:</b> ").append(info.eventType());
