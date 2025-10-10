@@ -72,7 +72,16 @@ public class SSHMonitor {
             botExecutor.submit(() -> {
                 // implement trigger
                 logger.info("Detected new login: {}", info.toString());
-                telegramBotSender.sendTelegramMessage("<b>New login:</b>    " + info, "HTML");
+                StringBuilder msg = new StringBuilder("<h2>New Activity</h2>\n\n");
+                msg.append("\n<b>Description:</b> ").append(info.description());
+                msg.append("\n<b>Success:</b> ").append(info.success());
+                msg.append("\n<b>EventType:</b> ").append(info.eventType());
+                msg.append("\n<b>AuthMethod:</b> ").append(info.authMethod());
+                msg.append("\n<b>User:</b> ").append(info.user());
+                msg.append("\n<b>Port:</b> ").append(info.port());
+                msg.append("\n<b>Ip:</b> ").append(info.ip());
+                msg.append("\n<b>Log: </b><code>").append(info.rawLine()).append("</code>");
+                telegramBotSender.sendTelegramMessage(msg.toString(), "HTML");
             });
         });
         monitor.startMonitoring();
