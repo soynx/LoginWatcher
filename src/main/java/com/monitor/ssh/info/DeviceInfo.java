@@ -122,7 +122,7 @@ public class DeviceInfo {
         return sb.toString();
     }
 
-    private class ProjectInfo {
+    private static class ProjectInfo {
 
         public static String getProjectVersion() {
             try (InputStream input = ProjectInfo.class.getClassLoader().getResourceAsStream("version.properties")) {
