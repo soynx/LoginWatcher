@@ -43,23 +43,23 @@ public class Config {
     }
 
     public static boolean getNOTIFY_SUCCESS() {
-        return NOTIFY_SUCCESS == null && NOTIFY_SUCCESS.equals("true");
+        return NOTIFY_SUCCESS == null || NOTIFY_SUCCESS.equals("true");
     }
 
     public static boolean getNOTIFY_DISCONNECT() {
-        return NOTIFY_DISCONNECT == null && NOTIFY_DISCONNECT.equals("true");
+        return NOTIFY_DISCONNECT == null || NOTIFY_DISCONNECT.equals("true");
     }
 
     public static boolean getNOTIFY_FAIL() {
-        return NOTIFY_FAIL == null && NOTIFY_FAIL.equals("true");
+        return NOTIFY_FAIL == null || NOTIFY_FAIL.equals("true");
     }
 
     public static boolean getNOTIFY_CLOSE_SESSION() {
-        return NOTIFY_CLOSE_SESSION == null && NOTIFY_CLOSE_SESSION.equals("true");
+        return NOTIFY_CLOSE_SESSION == null || NOTIFY_CLOSE_SESSION.equals("true");
     }
 
     public static boolean getNOTIFY_INVALID_USER() {
-        return NOTIFY_INVALID_USER == null && NOTIFY_INVALID_USER.equals("true");
+        return NOTIFY_INVALID_USER == null || NOTIFY_INVALID_USER.equals("true");
     }
 
     public static String getNOTIFY_IGNORE_CONTENTS() {

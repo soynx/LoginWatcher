@@ -48,11 +48,11 @@ Each variable accepts `"true"` or `"false"`. If omitted or set incorrectly, noti
 
 | Variable                 | Description                                                    | Default | Required |
 |--------------------------|----------------------------------------------------------------|---------|----------|
-| `NOTIFY_SUCCESS`         | Notify when a login succeeds.                                  | `false` | ❌        |
-| `NOTIFY_FAIL`            | Notify when a login attempt fails.                             | `false` | ❌        |
-| `NOTIFY_DISCONNECT`      | Notify when a session disconnects.                             | `false` | ❌        |
-| `NOTIFY_INVALID_USER`    | Notify when an invalid user attempts to log in.                | `false` | ❌        |
-| `NOTIFY_CLOSE_SESSION`   | Notify when a session is closed.                               | `false` | ❌        |
+| `NOTIFY_SUCCESS`         | Notify when a login succeeds.                                  | `true`  | ❌        |
+| `NOTIFY_FAIL`            | Notify when a login attempt fails.                             | `true`  | ❌        |
+| `NOTIFY_DISCONNECT`      | Notify when a session disconnects.                             | `true`  | ❌        |
+| `NOTIFY_INVALID_USER`    | Notify when an invalid user attempts to log in.                | `true`  | ❌        |
+| `NOTIFY_CLOSE_SESSION`   | Notify when a session is closed.                               | `true`  | ❌        |
 | `NOTIFY_IGNORE_CONTENTS` | Strings to ignore in log entries (useful for filtering noise). | —       | ❌        |
 
 
