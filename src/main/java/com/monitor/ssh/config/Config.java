@@ -20,6 +20,7 @@ public class Config {
     private static final String TELEGRAM_CHAT_ID = System.getenv("TELEGRAM_CHAT_ID");
     private static final String TELEGRAM_BOT_NAME = System.getenv("TELEGRAM_BOT_NAME");
 
+    private static final String NOTIFY_SHOW_LOG = System.getenv("NOTIFY_SHOW_LOG");
     private static final String NOTIFY_SUCCESS = System.getenv("NOTIFY_SUCCESS");
     private static final String NOTIFY_FAIL = System.getenv("NOTIFY_FAIL");
     private static final String NOTIFY_DISCONNECT = System.getenv("NOTIFY_DISCONNECT");
@@ -40,6 +41,10 @@ public class Config {
         if (var == null || var.isBlank()) {
             exitOnConfig(var);
         }
+    }
+
+    public static boolean getNOTIFY_SHOW_LOG() {
+        return NOTIFY_SHOW_LOG != null && NOTIFY_SHOW_LOG.equals("true");
     }
 
     public static boolean getNOTIFY_SUCCESS() {
