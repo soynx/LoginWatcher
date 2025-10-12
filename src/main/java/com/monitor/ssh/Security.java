@@ -3,6 +3,7 @@ package com.monitor.ssh;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import com.monitor.ssh.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,40 +15,17 @@ public class Security {
 
     private static final Logger logger = LoggerFactory.getLogger(Security.class);
 
-    public static void validateConfig() {
-        String host = System.getenv("SSH_HOST");
-        String portStr = System.getenv("SSH_PORT");
-        String user = System.getenv("SSH_USER");
-        String password = System.getenv("SSH_PASSWORD");
-        String privateKey = System.getenv("SSH_PRIVATE_KEY");
-
-        int port = (portStr != null && !portStr.isEmpty()) ? Integer.parseInt(portStr) : 22;
-
-        if (host == null || host.isBlank() || user == null || user.isBlank()) {
-            throw new IllegalArgumentException("SSH configuration missing. Please set SSH_HOST, SSH_USER, SSH_PASSWORD, SSH_PORT (optional).");
-
-        } else if ((password == null || password.isBlank()) && (privateKey == null || privateKey.isBlank())) {
-            throw new IllegalArgumentException("SSH configuration missing. Please set at least a SSH_PASSWORD or SSH_PRIVATE_KEY.");
-        } else {
-            logger.info("Using SSH host: {}", host);
-            logger.info("Using SSH user: {}", user);
-            logger.info("Using SSH port: {}", port);
-        }
-    }
-
     /**
      * Method to shut down the Host Linux system over an ssh connection
      * @return If the shutdown was successfully or not
      */
     public static boolean shutdownHost() {
-        String host = System.getenv("SSH_HOST");
-        String portStr = System.getenv("SSH_PORT");
-        String user = System.getenv("SSH_USER");
-        String password = System.getenv("SSH_PASSWORD");
-        String privateKey = System.getenv("SSH_PRIVATE_KEY");
-        String privateKeyPassphrase = System.getenv("SSH_PRIVATE_KEY_PASSPHRASE"); // optional
-
-        int port = (portStr != null && !portStr.isEmpty()) ? Integer.parseInt(portStr) : 22;
+        String host = Config.getSSH_HOST();
+        int port = Config.getSSH_PORT();
+        String user = Config.getSSH_USERNAME();
+        String password = Config.getSSH_PASSWORD();
+        String privateKey = Config.getSSH_PRIVATE_KEY();
+        String privateKeyPassphrase = Config.getSSH_PRIVATE_KEY_PASSPHRASE();
 
         Session session = null;
         ChannelExec channel = null;

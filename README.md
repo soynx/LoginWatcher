@@ -2,21 +2,62 @@
 
 Sends Telegram Notifications over a Telegram-Bot when detecting a Login-attempt.
 
-### Config:
-configurable over ENV:
+## Configuration
 
-- ``AUTH_LOG_PATH`` Path to your Linux Auth Log
-- ``TELEGRAM_TOKEN`` Token of your telegram Bot
-- ``TELEGRAM_CHAT_ID`` Chat-Id of your preferred Telegram Chat
-- ``TELEGRAM_BOT_NAME`` Name of your Telegram Chat
-- ``SSH_HOST`` The host domain / ip the container uses to connect to the host system
-- ``SSH_PORT`` The port of your SSH server (default 22)
-- ``SSH_USER`` The username for SSH login
-- ``SSH_PASSWORD`` The Password for SSH login 
-- ``SSH_PRIVATE_KEY`` The Private Key for SSH login
-- ``SSH_PRIVATE_KEY_PASSPHRASE`` The passphrase for your SSH private key (optional)
+The project is fully configurable via **environment variables** (ENV).  
+Below is a list of all available configuration parameters.
 
-> There must be a password or Private Key set for SSH authentication
+
+### SSH Connection
+
+| Variable                     | Description                                                                             | Default | Required                                  |
+|------------------------------|-----------------------------------------------------------------------------------------|---------|-------------------------------------------|
+| `SSH_HOST`                   | The host domain or IP address used by the container to connect to the monitored system. | —       | ✅                                         |
+| `SSH_PORT`                   | The port of the SSH server.                                                             | `22`    | ❌                                         |
+| `SSH_USERNAME`               | The SSH username used for login.                                                        | —       | ✅                                         |
+| `SSH_PASSWORD`               | The SSH password used for login (alternative to key authentication).                    | —       | ⚠️ Required if no private key is provided |
+| `SSH_PRIVATE_KEY`            | Path or content of the SSH private key used for authentication.                         | —       | ⚠️ Required if no password is provided    |
+| `SSH_PRIVATE_KEY_PASSPHRASE` | Optional passphrase for the SSH private key.                                            | —       | ❌                                         |
+
+> There must be **either** a password **or** a private key set for SSH authentication.
+
+---
+
+### Telegram Notifications
+
+| Variable            | Description                                                      | Default | Required |
+|---------------------|------------------------------------------------------------------|---------|----------|
+| `TELEGRAM_TOKEN`    | Token of your Telegram Bot.                                      | —       | ✅        |
+| `TELEGRAM_CHAT_ID`  | Chat ID of the preferred Telegram chat to receive notifications. | —       | ✅        |
+| `TELEGRAM_BOT_NAME` | Name of the Telegram bot used in messages.                       | —       | ✅        |
+
+---
+
+### Log Monitoring
+
+| Variable        | Description                                                                        | Default | Required |
+|-----------------|------------------------------------------------------------------------------------|---------|----------|
+| `AUTH_LOG_PATH` | Path to your Linux authentication log file (e.g., `/var/log/auth_monitoring.log`). | —       | ✅        |
+
+---
+
+### Notification Triggers
+
+These environment variables control which events will trigger notifications.  
+Each variable accepts `"true"` or `"false"`. If omitted or set incorrectly, notifications are disabled by default.
+
+| Variable                 | Description                                                    | Default | Required |
+|--------------------------|----------------------------------------------------------------|---------|----------|
+| `NOTIFY_SUCCESS`         | Notify when a login succeeds.                                  | `false` | ❌        |
+| `NOTIFY_FAIL`            | Notify when a login attempt fails.                             | `false` | ❌        |
+| `NOTIFY_DISCONNECT`      | Notify when a session disconnects.                             | `false` | ❌        |
+| `NOTIFY_INVALID_USER`    | Notify when an invalid user attempts to log in.                | `false` | ❌        |
+| `NOTIFY_CLOSE_SESSION`   | Notify when a session is closed.                               | `false` | ❌        |
+| `NOTIFY_IGNORE_CONTENTS` | Strings to ignore in log entries (useful for filtering noise). | —       | ❌        |
+
+
+---
+
 
 ### Requirements:
 - Docker-CLI

@@ -1,5 +1,6 @@
 package com.monitor.ssh;
 
+import com.monitor.ssh.config.Config;
 import com.monitor.ssh.info.AuthInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,38 +26,9 @@ public class SSHMonitor {
     private final List<String> processedLogLines = new ArrayList<>();
 
     public SSHMonitor(TriggerHandler triggerHandler) throws TelegramApiException {
-        this.logFilePath = System.getenv("AUTH_LOG_PATH");
+        this.logFilePath = Config.getAuthLogPath();
         this.triggerHandler = triggerHandler;
 
-        // validate all variables that are set over ENV
-        // throws IllegalArgumentException when a variable is not properly set
-        // ################################################################################################
-
-        Security.validateConfig();
-
-        if (Objects.isNull(logFilePath) || logFilePath.isBlank() || !new File(logFilePath).exists()) {
-            throw new IllegalArgumentException("Log file path does not exist or is not set: " + logFilePath);
-        } else {
-            logger.info("Using logfile: {}", logFilePath);
-        }
-
-        if (telegramBotSender.getBotToken() == null || telegramBotSender.getBotToken().isBlank()) {
-            throw new IllegalArgumentException("No telegram bot token provided!");
-        } else {
-            logger.info("Using Telegram Bot token: {}", telegramBotSender.getBotToken());
-        }
-
-        if (telegramBotSender.getChatId() == null || telegramBotSender.getChatId().isBlank()) {
-            throw new IllegalArgumentException("No chat-id provided!");
-        } else {
-            logger.info("Using Telegram Bot chat: {}", telegramBotSender.getChatId());
-        }
-
-        if (telegramBotSender.getBotUsername() == null || telegramBotSender.getBotUsername().isBlank()) {
-            throw new IllegalArgumentException("No bot-name provided!");
-        } else {
-            logger.info("Using Telegram Bot chat: {}", telegramBotSender.getBotUsername());
-        }
         // ################################################################################################
 
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
