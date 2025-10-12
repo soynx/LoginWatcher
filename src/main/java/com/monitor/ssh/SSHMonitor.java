@@ -23,7 +23,7 @@ public class SSHMonitor {
 
     private final String logFilePath;
     private final TriggerHandler triggerHandler;
-    private final List<String> processedLogLines = new ArrayList<>();
+    private final LogBuffer logBuffer = new LogBuffer(100);
 
     public SSHMonitor(TriggerHandler triggerHandler) throws TelegramApiException {
         this.logFilePath = Config.getAuthLogPath();
@@ -72,8 +72,8 @@ public class SSHMonitor {
             while (true) {
                 String line = file.readLine();
                 if (line != null) {
-                    if (!processedLogLines.contains(line)) {
-                        processedLogLines.add(line);
+                    if (!logBuffer.contains(line)) {
+                        logBuffer.addLog(line);
                         AuthInfo info = SSHLogParser.parseLine(line);
                         if (info != null) {
                             triggerHandler.trigger(info);
