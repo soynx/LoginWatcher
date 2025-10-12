@@ -54,6 +54,7 @@ Each variable accepts `"true"` or `"false"`. If omitted or set incorrectly, noti
 | `NOTIFY_INVALID_USER`    | Notify when an invalid user attempts to log in.                | `true`  | ❌        |
 | `NOTIFY_CLOSE_SESSION`   | Notify when a session is closed.                               | `true`  | ❌        |
 | `NOTIFY_IGNORE_CONTENTS` | Strings to ignore in log entries (useful for filtering noise). | —       | ❌        |
+| `NOTIFY_SHOW_LOG`        | Shows the Log inside the Telegram Message                      | `false` | ❌        |
 
 
 ---

@@ -55,7 +55,9 @@ public class SSHMonitor {
                 msg.append("\n<b>User:</b> ").append(info.user());
                 msg.append("\n<b>Port:</b> ").append(info.port());
                 msg.append("\n<b>Ip:</b> ").append(info.ip());
-                msg.append("\n<b>Log: </b><code>").append(info.rawLine()).append("</code>");
+                if (Config.getNOTIFY_SHOW_LOG()) {
+                    msg.append("\n<b>Log: </b><code>").append(info.rawLine()).append("</code>");
+                }
                 telegramBotSender.sendTelegramMessage(msg.toString(), "HTML");
             });
         });
