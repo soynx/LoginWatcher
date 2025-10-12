@@ -1,5 +1,6 @@
 package com.monitor.ssh;
 
+import com.monitor.ssh.config.Config;
 import com.monitor.ssh.info.DeviceInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,9 @@ public class TelegramBotSender extends TelegramLongPollingBot {
     private final String name;
 
     public TelegramBotSender() {
-        this.token = System.getenv("TELEGRAM_TOKEN");
-        this.chatId = System.getenv("TELEGRAM_CHAT_ID");
-        this.name = System.getenv("TELEGRAM_BOT_NAME");
+        this.token = Config.getTELEGRAM_TOKEN();
+        this.chatId = Config.getTELEGRAM_CHAT_ID();
+        this.name = Config.getTELEGRAM_BOT_NAME();
     }
 
     @Override

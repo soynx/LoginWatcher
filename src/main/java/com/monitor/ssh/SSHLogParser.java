@@ -1,5 +1,6 @@
 package com.monitor.ssh;
 
+import com.monitor.ssh.config.Config;
 import com.monitor.ssh.info.AuthInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,49 +33,69 @@ public class SSHLogParser {
     public static AuthInfo parseLine(String line) {
         if (line == null || line.isEmpty()) return null;
 
-        Matcher mSuccess = SUCCESS_PATTERN.matcher(line);
-        if (mSuccess.find()) {
-            String method = mSuccess.group(1);
-            String user = mSuccess.group(2);
-            String ip = mSuccess.group(3);
-            int port = Integer.parseInt(mSuccess.group(4));
-            return new AuthInfo(user, ip, port, true, method,
-                    "SUCCESS", "Successful login via " + method, line);
+        if (Config.getNOTIFY_IGNORE_CONTENTS() != null) {
+            if (line.contains(Config.getNOTIFY_IGNORE_CONTENTS())) {
+                logger.debug("Ignored line: {}", line);
+                return null;
+            }
         }
 
-        Matcher mFail = FAIL_PATTERN.matcher(line);
-        if (mFail.find()) {
-            String method = mFail.group(1);
-            String user = mFail.group(2);
-            String ip = mFail.group(3);
-            int port = Integer.parseInt(mFail.group(4));
-            return new AuthInfo(user, ip, port, false, method,
-                    "FAILURE", "Failed login via " + method, line);
+        if (Config.getNOTIFY_SUCCESS()) {
+            Matcher mSuccess = SUCCESS_PATTERN.matcher(line);
+            if (mSuccess.find()) {
+                String method = mSuccess.group(1);
+                String user = mSuccess.group(2);
+                String ip = mSuccess.group(3);
+                int port = Integer.parseInt(mSuccess.group(4));
+                return new AuthInfo(user, ip, port, true, method,
+                        "SUCCESS", "Successful login via " + method, line);
+            }
         }
 
-        Matcher mInvalid = INVALID_USER_PATTERN.matcher(line);
-        if (mInvalid.find()) {
-            String user = mInvalid.group(1);
-            String ip = mInvalid.group(2);
-            int port = Integer.parseInt(mInvalid.group(3));
-            return new AuthInfo(user, ip, port, false, "unknown",
-                    "INVALID_USER", "Attempted login with invalid user", line);
+        if (Config.getNOTIFY_FAIL()) {
+            Matcher mFail = FAIL_PATTERN.matcher(line);
+            if (mFail.find()) {
+                String method = mFail.group(1);
+                String user = mFail.group(2);
+                String ip = mFail.group(3);
+                int port = Integer.parseInt(mFail.group(4));
+                return new AuthInfo(user, ip, port, false, method,
+                        "FAILURE", "Failed login via " + method, line);
+            }
         }
 
-        Matcher mDisconnect = DISCONNECT_PATTERN.matcher(line);
-        if (mDisconnect.find()) {
-            String user = mDisconnect.group(1);
-            String ip = mDisconnect.group(2);
-            int port = Integer.parseInt(mDisconnect.group(3));
-            return new AuthInfo(user, ip, port, false, "unknown",
-                    "DISCONNECT", "Client disconnected before authentication", line);
+
+        if (Config.getNOTIFY_INVALID_USER()) {
+            Matcher mInvalid = INVALID_USER_PATTERN.matcher(line);
+            if (mInvalid.find()) {
+                String user = mInvalid.group(1);
+                String ip = mInvalid.group(2);
+                int port = Integer.parseInt(mInvalid.group(3));
+                return new AuthInfo(user, ip, port, false, "unknown",
+                        "INVALID_USER", "Attempted login with invalid user", line);
+            }
         }
 
-        Matcher mSessionClose = SESSION_CLOSE_PATTERN.matcher(line);
-        if (mSessionClose.find()) {
-            String user = mSessionClose.group(1);
-            return new AuthInfo(user, "localhost", 0, true, "session",
-                    "SESSION_CLOSE", "SSH session closed for user " + user, line);
+
+        if (Config.getNOTIFY_DISCONNECT()) {
+            Matcher mDisconnect = DISCONNECT_PATTERN.matcher(line);
+            if (mDisconnect.find()) {
+                String user = mDisconnect.group(1);
+                String ip = mDisconnect.group(2);
+                int port = Integer.parseInt(mDisconnect.group(3));
+                return new AuthInfo(user, ip, port, false, "unknown",
+                        "DISCONNECT", "Client disconnected before authentication", line);
+            }
+        }
+
+
+        if (Config.getNOTIFY_CLOSE_SESSION()) {
+            Matcher mSessionClose = SESSION_CLOSE_PATTERN.matcher(line);
+            if (mSessionClose.find()) {
+                String user = mSessionClose.group(1);
+                return new AuthInfo(user, "localhost", 0, true, "session",
+                        "SESSION_CLOSE", "SSH session closed for user " + user, line);
+            }
         }
 
         logger.trace("Unmatched log line: {}", line);
