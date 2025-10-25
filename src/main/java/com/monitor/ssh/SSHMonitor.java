@@ -26,6 +26,7 @@ public class SSHMonitor {
     private final LogBuffer logBuffer = new LogBuffer(100);
 
     public SSHMonitor(TriggerHandler triggerHandler) throws TelegramApiException {
+        Config.exitOnFalseConfig();
         this.logFilePath = Config.getAuthLogPath();
         this.triggerHandler = triggerHandler;
 
