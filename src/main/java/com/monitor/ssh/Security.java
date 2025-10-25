@@ -20,6 +20,10 @@ public class Security {
      * @return If the shutdown was successfully or not
      */
     public static boolean shutdownHost() {
+       return executeSsh("sudo -n shutdown -h now || shutdown -h now");
+    }
+
+    private static boolean executeSsh(String command) {
         String host = Config.getSSH_HOST();
         int port = Config.getSSH_PORT();
         String user = Config.getSSH_USERNAME();
@@ -57,7 +61,6 @@ public class Security {
             logger.info("Connecting to {}:{} via SSH...", host, port);
             session.connect(10000);
 
-            String command = "sudo -n shutdown -h now || shutdown -h now";
             channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
@@ -65,7 +68,7 @@ public class Security {
             InputStream in = channel.getInputStream();
             channel.connect();
 
-            logger.info("Executing shutdown command on host...");
+            logger.info("Executing '{}' command on host...", command);
             byte[] tmp = new byte[1024];
             long startTime = System.currentTimeMillis();
             while (true) {
@@ -80,18 +83,22 @@ public class Security {
                     break;
                 }
                 if (System.currentTimeMillis() - startTime > 15000) {
-                    logger.warn("Timeout waiting for shutdown command to complete.");
+                    logger.warn("Timeout waiting for command to complete.");
                     break;
                 }
                 Thread.sleep(500);
             }
 
         } catch (Exception e) {
-            logger.error("Error during SSH shutdown: ", e);
+            logger.error("Error during SSH command: ", e);
         } finally {
             if (channel != null) channel.disconnect();
             if (session != null) session.disconnect();
         }
         return success;
+    }
+
+    public static boolean testSSh() {
+        return executeSsh("echo testing ssh-connection ...");
     }
 }
