@@ -43,6 +43,16 @@ public class Config {
         }
     }
 
+    public static void exitOnFalseConfig() {
+        // call all getters that will exit once there is a false config
+        getSSH_HOST();
+        getSSH_USERNAME();
+        getTELEGRAM_BOT_NAME();
+        getTELEGRAM_CHAT_ID();
+        getTELEGRAM_TOKEN();
+        getAuthLogPath();
+    }
+
     public static boolean getNOTIFY_SHOW_LOG() {
         return NOTIFY_SHOW_LOG != null && NOTIFY_SHOW_LOG.equals("true");
     }
@@ -122,7 +132,6 @@ public class Config {
     public static String[] getNOTIFY_WHITELIST() {
         return NOTIFY_WHITELIST.split(";");
     }
-
 
     public static String getAuthLogPath() {
         exitOnNull(AUTH_LOG_PATH, "AUTH_LOG_PATH");
