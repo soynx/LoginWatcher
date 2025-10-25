@@ -81,7 +81,7 @@ public class TelegramBotSender extends TelegramLongPollingBot {
                         }
                         break;
 
-                    case "/test-ssh":
+                    case "/test_ssh":
                         sendTelegramMessage("<b>Authorised:</b> Testing SSH connection on host...", "HTML");
                         if (!Security.testSSh()) {
                             logger.warn("SSh test failed!");
