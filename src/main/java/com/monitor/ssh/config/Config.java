@@ -32,16 +32,14 @@ public class Config {
 
     private static final String AUTH_LOG_PATH = System.getenv("AUTH_LOG_PATH");
 
-
-
     private static void exitOnConfig(String name) {
         logger.error("Env '{}' is required!", name);
         System.exit(1);
     }
 
-    private static void exitOnNull(String var) {
+    private static void exitOnNull(String var, String name) {
         if (var == null || var.isBlank()) {
-            exitOnConfig(var);
+            exitOnConfig(name);
         }
     }
 
@@ -74,8 +72,7 @@ public class Config {
     }
 
     public static String getSSH_HOST() {
-        exitOnNull(SSH_HOST);
-
+        exitOnNull(SSH_HOST, "SSH_HOST");
         return SSH_HOST;
     }
 
@@ -87,8 +84,7 @@ public class Config {
     }
 
     public static String getSSH_USERNAME() {
-        exitOnNull(SSH_USERNAME);
-
+        exitOnNull(SSH_USERNAME, "SSH_USERNAME");
         return SSH_USERNAME;
     }
 
@@ -109,17 +105,17 @@ public class Config {
     }
 
     public static String getTELEGRAM_TOKEN() {
-        exitOnNull(TELEGRAM_TOKEN);
+        exitOnNull(TELEGRAM_TOKEN, "TELEGRAM_TOKEN");
         return TELEGRAM_TOKEN;
     }
 
     public static String getTELEGRAM_CHAT_ID() {
-        exitOnNull(TELEGRAM_CHAT_ID);
+        exitOnNull(TELEGRAM_CHAT_ID, "TELEGRAM_CHAT_ID");
         return TELEGRAM_CHAT_ID;
     }
 
     public static String getTELEGRAM_BOT_NAME() {
-        exitOnNull(TELEGRAM_BOT_NAME);
+        exitOnNull(TELEGRAM_BOT_NAME, "TELEGRAM_BOT_NAME");
         return TELEGRAM_BOT_NAME;
     }
 
@@ -129,7 +125,7 @@ public class Config {
 
 
     public static String getAuthLogPath() {
-        exitOnNull(AUTH_LOG_PATH);
+        exitOnNull(AUTH_LOG_PATH, "AUTH_LOG_PATH");
         File log = new File(AUTH_LOG_PATH);
         if (log.exists() && !log.isDirectory()) {
             return log.getAbsolutePath();
