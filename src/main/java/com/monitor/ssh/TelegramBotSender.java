@@ -50,7 +50,7 @@ public class TelegramBotSender extends TelegramLongPollingBot {
         List<BotCommand> commandList = List.of(
                 new BotCommand("/status", "Check if the bot is online"),
                 new BotCommand("/info", "Get system/device information"),
-                new BotCommand("/test-ssh", "Run SSH connection test"),
+                new BotCommand("/test_ssh", "Run SSH connection test"),
                 new BotCommand("/shutdown", "Shutdown the monitored host")
         );
 
