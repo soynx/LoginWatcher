@@ -78,7 +78,11 @@ public class SSHMonitor {
                         logBuffer.addLog(line);
                         AuthInfo info = SSHLogParser.parseLine(line);
                         if (info != null) {
-                            triggerHandler.trigger(info);
+                            if (isWhitelisted(info)) {
+                                logger.info("Skipping Notification for IP '{}' due to whitelist! Auth Information: {}", info.ip(), info);
+                            } else {
+                                triggerHandler.trigger(info);
+                            }
                         }
                     }
                 } else {
@@ -88,5 +92,14 @@ public class SSHMonitor {
         } catch (IOException | InterruptedException e) {
             logger.error("Error while monitoring log file", e);
         }
+    }
+
+    private boolean isWhitelisted(AuthInfo info) {
+        for (String ip : Config.getNOTIFY_WHITELIST()) {
+            if (Objects.equals(info.ip(), ip.strip())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

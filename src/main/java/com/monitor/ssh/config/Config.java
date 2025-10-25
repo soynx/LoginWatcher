@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
 
 public class Config {
 
@@ -27,6 +28,7 @@ public class Config {
     private static final String NOTIFY_INVALID_USER = System.getenv("NOTIFY_INVALID_USER");
     private static final String NOTIFY_CLOSE_SESSION = System.getenv("NOTIFY_CLOSE_SESSION");
     private static final String NOTIFY_IGNORE_CONTENTS = System.getenv("NOTIFY_IGNORE_CONTENTS");
+    private static final String NOTIFY_WHITELIST = System.getenv("NOTIFY_WHITELIST");
 
     private static final String AUTH_LOG_PATH = System.getenv("AUTH_LOG_PATH");
 
@@ -120,6 +122,11 @@ public class Config {
         exitOnNull(TELEGRAM_BOT_NAME);
         return TELEGRAM_BOT_NAME;
     }
+
+    public static String[] getNOTIFY_WHITELIST() {
+        return NOTIFY_WHITELIST.split(";");
+    }
+
 
     public static String getAuthLogPath() {
         exitOnNull(AUTH_LOG_PATH);
