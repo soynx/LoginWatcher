@@ -54,6 +54,8 @@ Each variable accepts `"true"` or `"false"`. If omitted or set incorrectly, noti
 | `NOTIFY_DISCONNECT`      | Notify when a session disconnects.                                                                       | `true`  | ❌        |
 | `NOTIFY_INVALID_USER`    | Notify when an invalid user attempts to log in.                                                          | `true`  | ❌        |
 | `NOTIFY_CLOSE_SESSION`   | Notify when a session is closed.                                                                         | `true`  | ❌        |
+| `NOTIFY_STARTUP`         | Notify when the app starts                                                                               | `true`  | ❌        |
+| `NOTIFY_SHUTDOWN`        | Notify when the app shuts down                                                                           | `true`  | ❌        |
 | `NOTIFY_IGNORE_CONTENTS` | Strings to ignore in log entries (useful for filtering noise).                                           | —       | ❌        |
 | `NOTIFY_SHOW_LOG`        | Shows the Log inside the Telegram Message                                                                | `false` | ❌        |
 
