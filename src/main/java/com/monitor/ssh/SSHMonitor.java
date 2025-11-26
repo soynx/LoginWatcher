@@ -8,12 +8,8 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,11 +30,13 @@ public class SSHMonitor {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(telegramBotSender);
 
-        // register a task before shutting down
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            logger.info("shutting down!");
-            telegramBotSender.sendTelegramMessage("<b>\uD83D\uDD34 Login Monitoring disabled!</b>", "HTML");
-        }));
+        if (Config.getNOTIFY_SHUTDOWN()) {
+            // register a task before shutting down
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                logger.info("shutting down!");
+                telegramBotSender.sendTelegramMessage("<b>\uD83D\uDD34 Login Monitoring disabled!</b>", "HTML");
+            }));
+        }
     }
 
     public static void main(String[] args) throws TelegramApiException {
@@ -66,7 +64,10 @@ public class SSHMonitor {
 
     public void startMonitoring() {
         logger.info("Monitoring started!");
-        telegramBotSender.sendTelegramMessage("<b>\uD83D\uDFE2 Login Monitoring started!</b>", "HTML");
+
+        if (Config.getNOTIFY_STARTUP()) {
+            telegramBotSender.sendTelegramMessage("<b>\uD83D\uDFE2 Login Monitoring started!</b>", "HTML");
+        }
 
         try (RandomAccessFile file = new RandomAccessFile(logFilePath, "r")) {
             file.seek(file.length()); // jump to end of the file

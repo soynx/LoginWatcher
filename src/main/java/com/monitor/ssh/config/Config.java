@@ -21,6 +21,8 @@ public class Config {
     private static final String TELEGRAM_BOT_NAME = System.getenv("TELEGRAM_BOT_NAME");
 
     private static final String NOTIFY_SHOW_LOG = System.getenv("NOTIFY_SHOW_LOG");
+    private static final String NOTIFY_STARTUP = System.getenv("NOTIFY_STARTUP");
+    private static final String NOTIFY_SHUTDOWN = System.getenv("NOTIFY_SHUTDOWN");
     private static final String NOTIFY_SUCCESS = System.getenv("NOTIFY_SUCCESS");
     private static final String NOTIFY_FAIL = System.getenv("NOTIFY_FAIL");
     private static final String NOTIFY_DISCONNECT = System.getenv("NOTIFY_DISCONNECT");
@@ -57,6 +59,14 @@ public class Config {
 
     public static boolean getNOTIFY_FAIL() {
         return NOTIFY_FAIL == null || NOTIFY_FAIL.equals("true");
+    }
+
+    public static boolean getNOTIFY_STARTUP() {
+        return NOTIFY_STARTUP == null || NOTIFY_STARTUP.equals("true");
+    }
+
+    public static boolean getNOTIFY_SHUTDOWN() {
+        return NOTIFY_SHUTDOWN == null || NOTIFY_SHUTDOWN.equals("true");
     }
 
     public static boolean getNOTIFY_CLOSE_SESSION() {
