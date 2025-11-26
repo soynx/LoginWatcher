@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
 
 public class Config {
 
@@ -29,20 +30,29 @@ public class Config {
     private static final String NOTIFY_INVALID_USER = System.getenv("NOTIFY_INVALID_USER");
     private static final String NOTIFY_CLOSE_SESSION = System.getenv("NOTIFY_CLOSE_SESSION");
     private static final String NOTIFY_IGNORE_CONTENTS = System.getenv("NOTIFY_IGNORE_CONTENTS");
+    private static final String NOTIFY_WHITELIST = System.getenv("NOTIFY_WHITELIST");
 
     private static final String AUTH_LOG_PATH = System.getenv("AUTH_LOG_PATH");
-
-
 
     private static void exitOnConfig(String name) {
         logger.error("Env '{}' is required!", name);
         System.exit(1);
     }
 
-    private static void exitOnNull(String var) {
+    private static void exitOnNull(String var, String name) {
         if (var == null || var.isBlank()) {
-            exitOnConfig(var);
+            exitOnConfig(name);
         }
+    }
+
+    public static void exitOnFalseConfig() {
+        // call all getters that will exit once there is a false config
+        getSSH_HOST();
+        getSSH_USERNAME();
+        getTELEGRAM_BOT_NAME();
+        getTELEGRAM_CHAT_ID();
+        getTELEGRAM_TOKEN();
+        getAuthLogPath();
     }
 
     public static boolean getNOTIFY_SHOW_LOG() {
@@ -82,8 +92,7 @@ public class Config {
     }
 
     public static String getSSH_HOST() {
-        exitOnNull(SSH_HOST);
-
+        exitOnNull(SSH_HOST, "SSH_HOST");
         return SSH_HOST;
     }
 
@@ -95,8 +104,7 @@ public class Config {
     }
 
     public static String getSSH_USERNAME() {
-        exitOnNull(SSH_USERNAME);
-
+        exitOnNull(SSH_USERNAME, "SSH_USERNAME");
         return SSH_USERNAME;
     }
 
@@ -117,22 +125,26 @@ public class Config {
     }
 
     public static String getTELEGRAM_TOKEN() {
-        exitOnNull(TELEGRAM_TOKEN);
+        exitOnNull(TELEGRAM_TOKEN, "TELEGRAM_TOKEN");
         return TELEGRAM_TOKEN;
     }
 
     public static String getTELEGRAM_CHAT_ID() {
-        exitOnNull(TELEGRAM_CHAT_ID);
+        exitOnNull(TELEGRAM_CHAT_ID, "TELEGRAM_CHAT_ID");
         return TELEGRAM_CHAT_ID;
     }
 
     public static String getTELEGRAM_BOT_NAME() {
-        exitOnNull(TELEGRAM_BOT_NAME);
+        exitOnNull(TELEGRAM_BOT_NAME, "TELEGRAM_BOT_NAME");
         return TELEGRAM_BOT_NAME;
     }
 
+    public static String[] getNOTIFY_WHITELIST() {
+        return NOTIFY_WHITELIST.split(";");
+    }
+
     public static String getAuthLogPath() {
-        exitOnNull(AUTH_LOG_PATH);
+        exitOnNull(AUTH_LOG_PATH, "AUTH_LOG_PATH");
         File log = new File(AUTH_LOG_PATH);
         if (log.exists() && !log.isDirectory()) {
             return log.getAbsolutePath();
