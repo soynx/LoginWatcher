@@ -17,9 +17,15 @@ public class Config {
     private static final String SSH_PASSWORD = System.getenv("SSH_PASSWORD");
     private static final String SSH_PORT = System.getenv("SSH_PORT");
 
+    private static final String TELEGRAM_USE = System.getenv("TELEGRAM_USE");
+    private static final String TELEGRAM_USE_SSH_RUNNER = System.getenv("TELEGRAM_USE_SSH_RUNNER");
     private static final String TELEGRAM_TOKEN = System.getenv("TELEGRAM_TOKEN");
     private static final String TELEGRAM_CHAT_ID = System.getenv("TELEGRAM_CHAT_ID");
     private static final String TELEGRAM_BOT_NAME = System.getenv("TELEGRAM_BOT_NAME");
+
+    private static final String NTFY_USE = System.getenv("NTFY_USE");
+    private static final String NTFY_URL = System.getenv("NTFY_URL");
+    private static final String NTFY_TOKEN = System.getenv("NTFY_TOKEN");
 
     private static final String NOTIFY_SHOW_LOG = System.getenv("NOTIFY_SHOW_LOG");
     private static final String NOTIFY_STARTUP = System.getenv("NOTIFY_STARTUP");
@@ -47,12 +53,34 @@ public class Config {
 
     public static void exitOnFalseConfig() {
         // call all getters that will exit once there is a false config
-        getSSH_HOST();
-        getSSH_USERNAME();
-        getTELEGRAM_BOT_NAME();
-        getTELEGRAM_CHAT_ID();
-        getTELEGRAM_TOKEN();
+        if (getTELEGRAM_USE()) {
+            getTELEGRAM_BOT_NAME();
+            getTELEGRAM_CHAT_ID();
+            getTELEGRAM_TOKEN();
+            if (getTELEGRAM_USE_SSH_RUNNER()) {
+                getSSH_HOST();
+                getSSH_USERNAME();
+            }
+        }
+        if (getNTFY_USE()) {
+            getNTFY_URL();
+        }
+        if (!getTELEGRAM_USE() && !getNTFY_USE()) {
+            logger.warn("No notification channel enabled - events will only be logged!");
+        }
         getAuthLogPath();
+    }
+
+    public static boolean getTELEGRAM_USE() {
+        return TELEGRAM_USE == null || TELEGRAM_USE.equals("true");
+    }
+
+    public static boolean getTELEGRAM_USE_SSH_RUNNER() {
+        return TELEGRAM_USE_SSH_RUNNER == null || TELEGRAM_USE_SSH_RUNNER.equals("true");
+    }
+
+    public static boolean getNTFY_USE() {
+        return NTFY_USE != null && NTFY_USE.equals("true");
     }
 
     public static boolean getNOTIFY_SHOW_LOG() {
@@ -139,8 +167,17 @@ public class Config {
         return TELEGRAM_BOT_NAME;
     }
 
+    public static String getNTFY_URL() {
+        exitOnNull(NTFY_URL, "NTFY_URL");
+        return NTFY_URL;
+    }
+
+    public static String getNTFY_TOKEN() {
+        return NTFY_TOKEN;
+    }
+
     public static String[] getNOTIFY_WHITELIST() {
-        return NOTIFY_WHITELIST.split(";");
+        return NOTIFY_WHITELIST == null ? new String[0] : NOTIFY_WHITELIST.split(";");
     }
 
     public static String getAuthLogPath() {

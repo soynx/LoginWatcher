@@ -1,6 +1,14 @@
 # LoginWatcher
 
-Sends Telegram Notifications over a Telegram-Bot when detecting a Login-attempt.
+Sends Telegram and/or [ntfy](https://ntfy.sh) Notifications when detecting a Login-attempt.
+
+### Notification Channels
+
+| Variable                  | Description                                                                                            | Default | Required |
+|---------------------------|--------------------------------------------------------------------------------------------------------|---------|----------|
+| `TELEGRAM_USE`            | Enable the Telegram bot. If `false`, all `TELEGRAM_*` and `SSH_*` variables are ignored.               | `true`  | ❌        |
+| `TELEGRAM_USE_SSH_RUNNER` | Enable the SSH runner (`/test_ssh`, `/shutdown` commands). If `false`, `SSH_*` variables are ignored.  | `true`  | ❌        |
+| `NTFY_USE`                | Enable ntfy notifications.                                                                             | `false` | ❌        |
 
 ## Configuration
 
@@ -9,6 +17,8 @@ Below is a list of all available configuration parameters.
 
 
 ### SSH Connection
+
+Only required if `TELEGRAM_USE` and `TELEGRAM_USE_SSH_RUNNER` are `true`.
 
 | Variable                     | Description                                                                             | Default | Required                                  |
 |------------------------------|-----------------------------------------------------------------------------------------|---------|-------------------------------------------|
@@ -25,11 +35,24 @@ Below is a list of all available configuration parameters.
 
 ### Telegram Notifications
 
+Only required if `TELEGRAM_USE` is `true`.
+
 | Variable            | Description                                                      | Default | Required |
 |---------------------|------------------------------------------------------------------|---------|----------|
 | `TELEGRAM_TOKEN`    | Token of your Telegram Bot.                                      | —       | ✅        |
 | `TELEGRAM_CHAT_ID`  | Chat ID of the preferred Telegram chat to receive notifications. | —       | ✅        |
 | `TELEGRAM_BOT_NAME` | Name of the Telegram bot used in messages.                       | —       | ✅        |
+
+---
+
+### ntfy Notifications
+
+Only required if `NTFY_USE` is `true`.
+
+| Variable     | Description                                                              | Default | Required |
+|--------------|--------------------------------------------------------------------------|---------|----------|
+| `NTFY_URL`   | Full topic URL of your ntfy server (e.g., `https://ntfy.sh/my-topic`).   | —       | ✅        |
+| `NTFY_TOKEN` | Access token, sent as `Authorization: Bearer` header.                    | —       | ❌        |
 
 ---
 
@@ -48,7 +71,7 @@ Each variable accepts `"true"` or `"false"`. If omitted or set incorrectly, noti
 
 | Variable                 | Description                                                                                              | Default | Required |
 |--------------------------|----------------------------------------------------------------------------------------------------------|---------|----------|
-| `NOTIFY_WHITELIST`       | List of IP-Addresses that will not send a Notification. (Use ``;`` for separation of multiple Addresses) | `true`  | ❌        |
+| `NOTIFY_WHITELIST`       | List of IP-Addresses that will not send a Notification. (Use ``;`` for separation of multiple Addresses) | —       | ❌        |
 | `NOTIFY_SUCCESS`         | Notify when a login succeeds.                                                                            | `true`  | ❌        |
 | `NOTIFY_FAIL`            | Notify when a login attempt fails.                                                                       | `true`  | ❌        |
 | `NOTIFY_DISCONNECT`      | Notify when a session disconnects.                                                                       | `true`  | ❌        |

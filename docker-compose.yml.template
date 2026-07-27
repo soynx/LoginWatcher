@@ -13,14 +13,21 @@ services:
       AUTH_LOG_PATH: "/var/log/auth_monitoring.log"
 
       # Telegram bot
+      TELEGRAM_USE: "true"
+      TELEGRAM_USE_SSH_RUNNER: "true"
       TELEGRAM_TOKEN: "your-telegram-bot-token"
       TELEGRAM_CHAT_ID: "your-chat-id"
       TELEGRAM_BOT_NAME: "name-of-your-bot"
 
+      # ntfy notifications
+      # NTFY_USE: "true"
+      # NTFY_URL: "https://ntfy.sh/your-topic"
+      # NTFY_TOKEN: "your-optional-access-token"
+
       # SSH server of your host system
       SSH_HOST: "your-host-ip"
       SSH_PORT: "22"
-      SSH_USER: "root"
+      SSH_USERNAME: "root"
       SSH_PASSWORD: "your-secure-password"
 
     volumes:

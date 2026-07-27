@@ -16,7 +16,8 @@ import java.util.concurrent.Executors;
 
 public class SSHMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SSHMonitor.class);
-    private static final TelegramBotSender telegramBotSender = new TelegramBotSender();
+    private static TelegramBotSender telegramBotSender = null;
+    private static NtfySender ntfySender = null;
 
     private final String logFilePath;
     private final TriggerHandler triggerHandler;
@@ -29,14 +30,21 @@ public class SSHMonitor {
 
         // ################################################################################################
 
-        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        botsApi.registerBot(telegramBotSender);
+        if (Config.getTELEGRAM_USE()) {
+            telegramBotSender = new TelegramBotSender();
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            botsApi.registerBot(telegramBotSender);
+        }
+
+        if (Config.getNTFY_USE()) {
+            ntfySender = new NtfySender();
+        }
 
         if (Config.getNOTIFY_SHUTDOWN()) {
             // register a task before shutting down
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 logger.info("shutting down!");
-                telegramBotSender.sendTelegramMessage("<b>\uD83D\uDD34 Login Monitoring disabled!</b>", "HTML");
+                sendNotification("<b>\uD83D\uDD34 Login Monitoring disabled!</b>");
             }));
         }
     }
@@ -58,7 +66,7 @@ public class SSHMonitor {
                 if (Config.getNOTIFY_SHOW_LOG()) {
                     msg.append("\n<b>Log: </b><code>").append(info.rawLine()).append("</code>");
                 }
-                telegramBotSender.sendTelegramMessage(msg.toString(), "HTML");
+                sendNotification(msg.toString());
             });
         });
         monitor.startMonitoring();
@@ -68,7 +76,7 @@ public class SSHMonitor {
         logger.info("Monitoring started!");
 
         if (Config.getNOTIFY_STARTUP()) {
-            telegramBotSender.sendTelegramMessage("<b>\uD83D\uDFE2 Login Monitoring started!</b>", "HTML");
+            sendNotification("<b>\uD83D\uDFE2 Login Monitoring started!</b>");
         }
 
         try (RandomAccessFile file = new RandomAccessFile(logFilePath, "r")) {
@@ -94,6 +102,15 @@ public class SSHMonitor {
             }
         } catch (IOException | InterruptedException e) {
             logger.error("Error while monitoring log file", e);
+        }
+    }
+
+    private static void sendNotification(String htmlMessage) {
+        if (telegramBotSender != null) {
+            telegramBotSender.sendTelegramMessage(htmlMessage, "HTML");
+        }
+        if (ntfySender != null) {
+            ntfySender.sendNtfyMessage(htmlMessage);
         }
     }
 

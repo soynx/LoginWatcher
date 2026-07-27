@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TelegramBotSender extends TelegramLongPollingBot {
@@ -47,12 +48,14 @@ public class TelegramBotSender extends TelegramLongPollingBot {
 
 
     private void registerBotCommands() {
-        List<BotCommand> commandList = List.of(
+        List<BotCommand> commandList = new ArrayList<>(List.of(
                 new BotCommand("/status", "Check if the bot is online"),
-                new BotCommand("/info", "Get system/device information"),
-                new BotCommand("/test_ssh", "Run SSH connection test"),
-                new BotCommand("/shutdown", "Shutdown the monitored host")
-        );
+                new BotCommand("/info", "Get system/device information")
+        ));
+        if (Config.getTELEGRAM_USE_SSH_RUNNER()) {
+            commandList.add(new BotCommand("/test_ssh", "Run SSH connection test"));
+            commandList.add(new BotCommand("/shutdown", "Shutdown the monitored host"));
+        }
 
         try {
             execute(new SetMyCommands(commandList, new BotCommandScopeDefault(), null));
@@ -74,6 +77,10 @@ public class TelegramBotSender extends TelegramLongPollingBot {
             if (incomingChatId.toString().equals(chatId)) {
                 switch (text.toLowerCase()) {
                     case "/shutdown":
+                        if (!Config.getTELEGRAM_USE_SSH_RUNNER()) {
+                            sendTelegramMessage("<b>SSH runner is disabled.</b>", "HTML");
+                            break;
+                        }
                         sendTelegramMessage("<b>Authorised:</b> Executing shutdown...", "HTML");
                         if (!Security.shutdownHost()) {
                             logger.warn("Failed to shutdown host");
@@ -82,6 +89,10 @@ public class TelegramBotSender extends TelegramLongPollingBot {
                         break;
 
                     case "/test_ssh":
+                        if (!Config.getTELEGRAM_USE_SSH_RUNNER()) {
+                            sendTelegramMessage("<b>SSH runner is disabled.</b>", "HTML");
+                            break;
+                        }
                         sendTelegramMessage("<b>Authorised:</b> Testing SSH connection on host...", "HTML");
                         if (!Security.testSSh()) {
                             logger.warn("SSh test failed!");
